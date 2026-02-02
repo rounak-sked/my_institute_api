@@ -5,9 +5,11 @@ class User < ApplicationRecord
         :jwt_authenticatable,            # Use JWT tokens for API authentication instead of sessions/cookies
         jwt_revocation_strategy: JwtDenylist  # Revoke JWTs on logout by storing revoked tokens in JwtDenylist
   ROLES = %w[admin faculty student].freeze
-
+  has_one_attached :profile_image
   validates :role, presence: true, inclusion: { in: ROLES }
-
+  validates :profile_image,
+    content_type: ['image/jpeg', 'image/png'],
+    size: { less_than: 2.megabytes }
   # Role helpers
   def admin?
     role == "admin"
